@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{{ classroom.title }} - Members</title>
+{% endblock %}
+
+{% block style_block %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/classroom.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="banner" style="background-color: #ddd; height: 300px; margin-top: 20px; position: relative;">
+                <img src="{{ url_for('static', filename='uploads/' + classroom.photo_url) }}" alt="Classroom Image"
+                    style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <!-- Flash messages for notifications -->
+    <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div>
+            {% for category, message in messages %}
+            {% if category == 'message' %}
+            <p class="alert alert-info custom-login-message">{{ message }}</p>
+            {% else %}
+            <p class="alert alert-{{ category }}">{{ message }}</p>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+    <div class="d-flex mb-4">
+        <a href="{{ url_for('main.classroom.view_class', id=classroom.id) }}"
+            class="btn btn-custom {% if request.path == url_for('main.classroom.view_class', id=classroom.id) %}btn-active{% endif %}">
+            Classwork
+        </a>
+        <a href="{{ url_for('main.classroom.view_members', id=classroom.id) }}"
+            class="btn btn-custom {% if request.path == url_for('main.classroom.view_members', id=classroom.id) %}btn-active{% endif %}">
+            Members
+        </a>
+    </div>
+
+
+    <h2 class="mb-4">Students of {{ classroom.title }}</h2>
+    
+
+    
+    <!-- Students Section -->
+    <div>
+        <ul class="list-group">
+            {% for member in members if member.role == 'student' %}
+            <li class="list-group-item">
+                <a >
+                    {{ member.name }} - {{ member.email }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
